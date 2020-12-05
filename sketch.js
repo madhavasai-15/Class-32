@@ -7,11 +7,12 @@ var engine, world;
 var box1, pig1,pig3;
 var backgroundImg,platform;
 var bird, slingshot;
+var score = 0;
 
 var gameState = "onSling";
 
 function preload() {
-    backgroundImg = loadImage("sprites/bg.png");
+    getTime();
 }
 
 function setup(){
@@ -42,21 +43,31 @@ function setup(){
 
     //log6 = new Log(230,180,80, PI/2);
     slingshot = new SlingShot(bird.body,{x:200, y:50});
+
 }
 
 function draw(){
-    background(backgroundImg);
+    if(backgroundImg){
+        background(backgroundImg);
+    }
     Engine.update(engine);
+
+   // fill("white");
+    textSize(32);
+    text("Score: " + score, width - 300, 50);
+
     //strokeWeight(4);
     box1.display();
     box2.display();
     ground.display();
     pig1.display();
+    pig1.Score();
     log1.display();
 
     box3.display();
     box4.display();
     pig3.display();
+    pig3.Score();
     log3.display();
 
     box5.display();
@@ -78,7 +89,7 @@ function mouseDragged(){
 
 function mouseReleased(){
     slingshot.fly();
-    gameState = "launched";
+    //gameState = "launched";
 }
 
 function keyPressed(){
@@ -86,3 +97,43 @@ function keyPressed(){
        // slingshot.attach(bird.body);
     }
 }
+
+async function getTime(){
+    var response = await fetch("http://worldtimeapi.org/api/timezone/Asia/Kolkata");
+    var responseJSON = await response.json();     //extracts the data in JSON
+    console.log(responseJSON);
+
+
+    var dt = responseJSON.datetime;
+    console.log(dt);
+
+    var hour = dt.slice(11, 13);
+    console.log(hour);
+
+    if(hour >= 06 && hour < 19){
+        backgroundImg = loadImage("sprites/bg.png");
+    }else {
+        backgroundImg = loadImage("sprites/bg2.png");
+    }
+}
+
+/*
+API call
+    - Application Programming Interface
+    - "Promise" of information
+    - fetch(): 1. Send a request to the API service
+               2. Waits & collects the reponse
+
+JS runs synchronously ==> one after the other
+asynchronous ==> Where JS waits for some statements to be completed before jumping to the next one
+
+
+JSON
+ - JS Object Notation
+ - Data Structure
+ - created inside {..}
+ - {index_name: index_value, ..}
+ - List of items ==> attributes/elements
+
+
+*/
